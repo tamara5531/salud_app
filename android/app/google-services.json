@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "679447374543",
+    "project_id": "medsalud-f54e2",
+    "storage_bucket": "medsalud-f54e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679447374543:android:edda665eb04cf35ee0e5ba",
+        "android_client_info": {
+          "package_name": "com.example.medsal_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDs9ulDcIhhwlBzwVJQIoiuVtOPxd0nlG8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

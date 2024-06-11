@@ -1,0 +1,3 @@
+class GoogleFontsDescriptor {
+  // Implementación básica
+}
