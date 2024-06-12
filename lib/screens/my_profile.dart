@@ -7,8 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:medsal/firestore_data/appointment_history_list.dart';
 import 'package:medsal/globals.dart';
 import 'package:image_picker/image_picker.dart';
-
-import 'setting.dart';
+import 'package:medsal/screens/setting.dart';
 
 class MyProfile extends StatefulWidget {
   const MyProfile({Key? key}) : super(key: key);
@@ -19,7 +18,7 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfileState extends State<MyProfile> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  late User user;
+  User? user;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
   // details
@@ -31,25 +30,49 @@ class _MyProfileState extends State<MyProfile> {
   // default dp
   String image =
       'https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png';
+  bool _isLoading = true;
+
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   Future<void> _getUser() async {
-    user = _auth.currentUser!;
+    try {
+      user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('User not found');
+      }
 
-    DocumentSnapshot snap = await FirebaseFirestore.instance
-        .collection(isDoctor ? 'doctor' : 'patient')
-        .doc(user.uid)
-        .get();
+      DocumentSnapshot snap = await FirebaseFirestore.instance
+          .collection(isDoctor ? 'doctor' : 'patient')
+          .doc(user!.uid)
+          .get();
 
-    setState(() {
-      var snapshot = snap.data() as Map<String, dynamic>;
-      email = snapshot['email'];
-      name = snapshot['name'];
-      phone = snapshot['phone'];
-      bio = snapshot['bio'];
-      image = snapshot['profilePhoto'] ?? image;
-      specialization = snapshot['specialization'];
-    });
-    print(snap.data());
+      if (!snap.exists || snap.data() == null) {
+        throw Exception('Document not found or data is null');
+      }
+
+      setState(() {
+        var snapshot = snap.data() as Map<String, dynamic>;
+        email = snapshot['email'];
+        name = snapshot['name'];
+        phone = snapshot['phone'];
+        bio = snapshot['bio'];
+        image = snapshot['profilePhoto'] ?? image;
+        specialization = snapshot['specialization'];
+        _isLoading = false;
+      });
+      print(snap.data());
+    } catch (e) {
+      print(e);
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
@@ -60,6 +83,14 @@ class _MyProfileState extends State<MyProfile> {
 
   @override
   Widget build(BuildContext context) {
+    if (_isLoading) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    if (user == null) {
+      return Center(child: Text('No user found'));
+    }
+
     return Scaffold(
       body: SafeArea(
         child: NotificationListener<OverscrollIndicatorNotification>(
@@ -70,6 +101,7 @@ class _MyProfileState extends State<MyProfile> {
           child: ListView(
             physics: const ClampingScrollPhysics(),
             shrinkWrap: true,
+            controller: _scrollController,
             children: <Widget>[
               Stack(
                 alignment: Alignment.center,
@@ -192,7 +224,7 @@ class _MyProfileState extends State<MyProfile> {
                           width: 10,
                         ),
                         Text(
-                          user.email ?? 'Email Not Added',
+                          email ?? 'Email Not Added',
                           style: GoogleFonts.lato(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -359,6 +391,7 @@ class _MyProfileState extends State<MyProfile> {
                     ),
                     Expanded(
                       child: Scrollbar(
+                        controller: _scrollController,
                         thumbVisibility: true,
                         child: Container(
                           padding: const EdgeInsets.only(right: 15),
@@ -424,7 +457,7 @@ class _MyProfileState extends State<MyProfile> {
 
   // upload image
   Future uploadFile(Uint8List img, String fileName) async {
-    final destination = 'dp/${user.displayName}-$fileName';
+    final destination = 'dp/${user?.displayName}-$fileName';
     try {
       final ref = storage.ref(destination);
 
@@ -439,13 +472,13 @@ class _MyProfileState extends State<MyProfile> {
       });
       FirebaseFirestore.instance
           .collection(isDoctor ? 'doctor' : 'patient')
-          .doc(user.uid)
+          .doc(user?.uid)
           .set({
         'profilePhoto': downloadUrl,
       }, SetOptions(merge: true));
 
       // main user data
-      FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      FirebaseFirestore.instance.collection('users').doc(user?.uid).set({
         'profilePhoto': downloadUrl,
       }, SetOptions(merge: true));
 
