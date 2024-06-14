@@ -23,9 +23,6 @@ class ChatRoom extends StatefulWidget {
       required this.profileUrl})
       : super(key: key);
 
-  ////////////////////////////////////////
-  // final chatRoomId = "";
-
   @override
   State<ChatRoom> createState() => _ChatRoomState();
 }
@@ -36,7 +33,19 @@ class _ChatRoomState extends State<ChatRoom> {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late User user;
-  late var messageDao;
+  late MessageDao messageDao;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeChatRoom();
+  }
+
+  Future<void> _initializeChatRoom() async {
+    await _getUser();
+    await _setChatRoomId();
+    setState(() {});
+  }
 
   Future<void> _getUser() async {
     user = _auth.currentUser!;
@@ -62,17 +71,20 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _getUser();
-    _setChatRoomId();
-    setState(() {});
-  }
-
-  @override
   Widget build(BuildContext context) {
+    if (_auth.currentUser == null) {
+      // Show a loading indicator while waiting for initialization
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('Chat Room'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     return Scaffold(
-      // app bar with back button, profile picture, and name, and call button
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -84,7 +96,6 @@ class _ChatRoomState extends State<ChatRoom> {
               backgroundImage: NetworkImage(widget.profileUrl),
             ),
             const SizedBox(width: 10),
-            // prevent over flow text if name is too long
             Text(
               widget.user2Name.substring(0, min(widget.user2Name.length, 12)),
             ),
@@ -105,11 +116,7 @@ class _ChatRoomState extends State<ChatRoom> {
           ),
         ],
       ),
-
-      // body with messages
       body: Column(children: [_getMessageList()]),
-
-      // type message and send button
       bottomSheet: BottomAppBar(
         child: SizedBox(
           height: 50,
@@ -185,31 +192,23 @@ class MessageWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final size = msg.length;
-
     return Container(
       alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      // margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
-        // margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
-        margin: EdgeInsets.fromLTRB(isMe ? 60 : 8, 5, isMe ? 8 : 60, 5),
-        decoration: BoxDecoration(
-          // borderRadius: BorderRadius.circular(15),
-          borderRadius: BorderRadius.only(
-            topLeft: isMe ? const Radius.circular(15) : Radius.zero,
-            topRight: isMe ? Radius.zero : const Radius.circular(15),
-            bottomLeft: const Radius.circular(15),
-            bottomRight: const Radius.circular(15),
-          ),
-          color: isMe ? Colors.blue[300] : Colors.grey[300],
+      margin: EdgeInsets.fromLTRB(isMe ? 60 : 8, 5, isMe ? 8 : 60, 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: isMe ? const Radius.circular(15) : Radius.zero,
+          topRight: isMe ? Radius.zero : const Radius.circular(15),
+          bottomLeft: const Radius.circular(15),
+          bottomRight: const Radius.circular(15),
         ),
+        color: isMe ? Colors.blue[300] : Colors.grey[300],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
         child: Text(
           message,
-          style: const TextStyle(
-            fontSize: 16,
-          ),
+          style: const TextStyle(fontSize: 16),
         ),
       ),
     );

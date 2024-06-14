@@ -1,1 +1,26 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"medsalud-f54e2","appId":"1:679447374543:android:edda665eb04cf35ee0e5ba","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"medsalud-f54e2","configurations":{"android":"1:679447374543:android:edda665eb04cf35ee0e5ba","web":"1:679447374543:web:c731a85c0788e30be0e5ba","windows":"1:679447374543:web:67b81f7810b429bde0e5ba"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "medsalud-f54e2",
+          "appId": "1:679447374543:android:edda665eb04cf35ee0e5ba",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "medsalud-f54e2",
+          "configurations": {
+            "android": "1:679447374543:android:edda665eb04cf35ee0e5ba",
+            "web": "1:679447374543:web:c731a85c0788e30be0e5ba",
+            "windows": "1:679447374543:web:67b81f7810b429bde0e5ba"
+          }
+        }
+      }
+    }
+  },
+  "database": {
+    "rules": "database.rules.json"
+  }
+}

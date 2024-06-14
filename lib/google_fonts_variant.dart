@@ -1,6 +1,19 @@
+import 'package:flutter/material.dart';
 class GoogleFontsVariant {
-  get fontWeight => null;
+  final FontWeight fontWeight;
+  final FontStyle fontStyle;
 
-  get fontStyle => null;
-  // Implementación básica
+  GoogleFontsVariant({
+    required this.fontWeight,
+    required this.fontStyle,
+  });
+
+  String toApiFilename() {
+    return '${fontWeight.index}_${fontStyle.index}';
+  }
+
+  @override
+  String toString() {
+    return 'w${fontWeight.index}_s${fontStyle.index}';
+  }
 }

@@ -60,7 +60,6 @@ class _TopRatedListState extends State<TopRatedList> {
                       },
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        //mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           CircleAvatar(
                             backgroundImage:
@@ -83,11 +82,12 @@ class _TopRatedListState extends State<TopRatedList> {
                                   color: Colors.black87,
                                 ),
                               ),
-                              Text(
-                                doctor['specialization'],
-                                style: GoogleFonts.lato(
-                                    fontSize: 16, color: Colors.black54),
-                              ),
+                              // Comentar o eliminar esta línea
+                              // Text(
+                              //   doctor['specialization'],
+                              //   style: GoogleFonts.lato(
+                              //       fontSize: 16, color: Colors.black54),
+                              // ),
                             ],
                           ),
                           const SizedBox(

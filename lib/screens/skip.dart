@@ -17,7 +17,7 @@ class _SkipState extends State<Skip> {
       PageViewModel(
         title: '',
         image: Image.asset(
-          'assets/doc.png',
+          'assets/1.png',
           //fit: BoxFit.cover,
         ),
         //body: "Search Doctors",
@@ -71,7 +71,7 @@ class _SkipState extends State<Skip> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IntroductionScreen(
-        globalBackgroundColor: Colors.lightBlue[100],
+        globalBackgroundColor: Color.fromARGB(255, 150, 225, 230),
         pages: getpages(),
         showNextButton: false,
         showSkipButton: true,

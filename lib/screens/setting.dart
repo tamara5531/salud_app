@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:medsal/firestore_data/user_details.dart';
 
 class UserSettings extends StatefulWidget {
-  const UserSettings({Key? key}) : super(key: key);
+  const UserSettings({super.key});
 
   @override
   State<UserSettings> createState() => _UserSettingsState();
@@ -76,7 +76,7 @@ class _UserSettingsState extends State<UserSettings> {
                       '/login', (Route<dynamic> route) => false);
                   _signOut();
                 },
-                style: TextButton.styleFrom(primary: Colors.grey),
+                style: TextButton.styleFrom(foregroundColor: Colors.grey),
                 child: Text(
                   'Sign out',
                   style: GoogleFonts.lato(

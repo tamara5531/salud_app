@@ -9,8 +9,7 @@ class UpdateUserDetails extends StatefulWidget {
   final String field;
   final String value;
   const UpdateUserDetails(
-      {Key? key, required this.label, required this.field, required this.value})
-      : super(key: key);
+      {super.key, required this.label, required this.field, required this.value});
 
   @override
   State<UpdateUserDetails> createState() => _UpdateUserDetailsState();
@@ -101,9 +100,7 @@ class _UpdateUserDetailsState extends State<UpdateUserDetails> {
                   Navigator.of(context).pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  elevation: 2,
-                  primary: Colors.indigo.withOpacity(0.9),
-                  onPrimary: Colors.black,
+                  foregroundColor: Colors.black, backgroundColor: Colors.indigo.withOpacity(0.9), elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(32.0),
                   ),
