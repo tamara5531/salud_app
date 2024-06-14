@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:medsal/screens/chat/chat_room.dart';
 import 'package:medsal/screens/patient/booking_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -324,18 +323,10 @@ class _DoctorProfileState extends State<DoctorProfile> {
                                       borderRadius: BorderRadius.circular(32.0),
                                     ),
                                   ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => ChatRoom(
-                                            user2Id: document['id'] ?? ' ',
-                                            user2Name: document['name'] ?? ' ',
-                                            profileUrl:
-                                                document['profilePhoto'] ?? ' ',
-                                          ),
-                                        ));
-                                  },
+                                onPressed: () {
+  // La funcionalidad de chat ha sido eliminada
+},
+
                                   child: const Icon(Icons
                                       .message_outlined)), /* Text(
                                   'Message',

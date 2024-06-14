@@ -14,7 +14,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // Initialize Firebase for all platforms(android, ios, web)
+  // Initialize Firebase for all platforms(android, web)
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

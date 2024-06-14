@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:medsal/screens/chat/chats.dart';
 import 'package:medsal/screens/my_profile.dart';
 import 'package:medsal/screens/patient/appointments.dart';
 import 'package:typicons_flutter/typicons_flutter.dart';
@@ -17,7 +16,6 @@ class _MainPageDoctorState extends State<MainPageDoctor> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 2;
   final List<Widget> _pages = [
-    const Chats(),
     const Appointments(),
     const MyProfile(),
   ];
@@ -71,10 +69,6 @@ class _MainPageDoctorState extends State<MainPageDoctor> {
                 ),
                 iconSize: 30,
                 tabs: const [
-                  GButton(
-                    icon: Icons.chat_outlined /* Typicons.group_outline */,
-                    text: 'Chats',
-                  ),
                   GButton(
                     icon: Typicons.calendar,
                     text: 'All Appointments',

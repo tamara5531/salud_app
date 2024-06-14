@@ -44,7 +44,6 @@ class _BookingScreenState extends State<BookingScreen> {
     user = _auth.currentUser!;
   }
 
-  // function for selecting appointment date
   Future<void> selectDate(BuildContext context) async {
     showDatePicker(
       context: context,
@@ -66,14 +65,12 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
-  // function for selecting appointment time
   Future<void> selectTime(BuildContext context) async {
     TimeOfDay? selectedTime = await showTimePicker(
       context: context,
       initialTime: currentTime,
     );
 
-    // ignore: use_build_context_synchronously
     MaterialLocalizations localizations = MaterialLocalizations.of(context);
     String formattedTime = localizations.formatTimeOfDay(selectedTime!,
         alwaysUse24HourFormat: false);
@@ -85,9 +82,7 @@ class _BookingScreenState extends State<BookingScreen> {
     dateTime = selectedTime.toString().substring(10, 15);
   }
 
-  // for showing appointment booked
   showAlertDialog(BuildContext context) {
-    // OK button
     Widget okButton = TextButton(
       child: Text(
         "OK",
@@ -97,14 +92,12 @@ class _BookingScreenState extends State<BookingScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            // view all pending appointments
             builder: (context) => const Appointments(),
           ),
         );
       },
     );
 
-    // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text(
         "Done!",
@@ -121,7 +114,6 @@ class _BookingScreenState extends State<BookingScreen> {
       ],
     );
 
-    // show the dialog
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -174,8 +166,6 @@ class _BookingScreenState extends State<BookingScreen> {
               const SizedBox(
                 height: 10,
               ),
-
-              // form
               Form(
                 key: _formKey,
                 child: Container(
@@ -183,7 +173,6 @@ class _BookingScreenState extends State<BookingScreen> {
                   padding: const EdgeInsets.only(top: 0),
                   child: Column(
                     children: [
-                      // enter patient details
                       Container(
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.only(left: 16),
@@ -199,8 +188,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 30,
                       ),
-
-                      // patient Name
                       TextFormField(
                         controller: _nameController,
                         focusNode: f1,
@@ -238,8 +225,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-
-                      // patient phone number
                       TextFormField(
                         keyboardType: TextInputType.phone,
                         focusNode: f2,
@@ -280,8 +265,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-
-                      // disease description
                       TextFormField(
                         focusNode: f3,
                         controller: _descriptionController,
@@ -315,8 +298,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-
-                      // Doctor name
                       TextFormField(
                         readOnly: true,
                         controller: _doctorController,
@@ -347,8 +328,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-
-                      // appointment date
                       Container(
                         alignment: Alignment.center,
                         height: 60,
@@ -424,8 +403,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 20,
                       ),
-
-                      // appointment time
                       Container(
                         alignment: Alignment.center,
                         height: 60,
@@ -500,8 +477,6 @@ class _BookingScreenState extends State<BookingScreen> {
                       const SizedBox(
                         height: 40,
                       ),
-
-                      // book appointment button
                       SizedBox(
                         height: 50,
                         width: MediaQuery.of(context).size.width,
@@ -514,9 +489,9 @@ class _BookingScreenState extends State<BookingScreen> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              print(_nameController.text);
-                              print(_dateController.text);
-                              print(widget.doctor);
+                              debugPrint(_nameController.text);
+                              debugPrint(_dateController.text);
+                              debugPrint(widget.doctor);
                               showAlertDialog(context);
                               _createAppointment();
                             }
@@ -546,11 +521,10 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Future<void> _createAppointment() async {
-    // print(dateUTC + ' ' + date_Time + ':00');
     String appointId = '${user.uid}${widget.doctorUid}$dateUTC $dateTime}';
-    print('${widget.doctorUid}.');
-    print('${user.uid}.');
-    print('${appointId}.');
+    debugPrint('${widget.doctorUid}.');
+    debugPrint('${user.uid}.');
+    debugPrint('${appointId}.');
 
     var details = {
       'patientName': _nameController.text,
@@ -560,7 +534,6 @@ class _BookingScreenState extends State<BookingScreen> {
       'date': DateTime.parse('$dateUTC $dateTime:00'),
       'patientId': user.uid,
       'doctorId': widget.doctorUid,
-      //help in cancelling appointment
       'appointmentID': appointId,
     };
 
@@ -578,7 +551,6 @@ class _BookingScreenState extends State<BookingScreen> {
         .doc(appointId)
         .set(details, SetOptions(merge: true));
 
-    // add to doctor data
     FirebaseFirestore.instance
         .collection('appointments')
         .doc(widget.doctorUid)

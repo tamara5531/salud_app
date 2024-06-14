@@ -12,7 +12,7 @@ import 'package:flutter/services.dart' hide AssetManifest;
 
 import 'package:http/http.dart' as http;
 
-import 'src/asset_manifest.dart' as google_fonts;
+import 'package:medsal/src/asset_manifest.dart' as google_fonts;
 // ignore: unused_import
 import 'file_io.dart' // Stubbed implementation by default.
     if (dart.library.io) 'file_io_desktop_and_mobile.dart' as file_io;

@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:medsal/screens/chat/chats.dart';
 import 'package:medsal/screens/my_profile.dart';
 import 'package:medsal/screens/patient/doctor_list.dart';
 import 'package:medsal/screens/patient/home_page.dart';
@@ -23,7 +22,6 @@ class _MainPagePatientState extends State<MainPagePatient> {
     const HomePage(),
     const DoctorsList(),
     const Appointments(),
-    const Chats(),
     const MyProfile(),
   ];
 
@@ -101,11 +99,6 @@ class _MainPagePatientState extends State<MainPagePatient> {
                     iconSize: 28,
                     icon: Typicons.calendar,
                     // text: 'Appointments',
-                  ),
-                  GButton(
-                    iconSize: 28,
-                    icon: Icons.chat,
-                    // text: 'Chat',
                   ),
                   GButton(
                     iconSize: 28,
