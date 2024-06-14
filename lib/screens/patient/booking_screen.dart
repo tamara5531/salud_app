@@ -11,6 +11,7 @@ class BookingScreen extends StatefulWidget {
 
   const BookingScreen({Key? key, required this.doctor, required this.doctorUid})
       : super(key: key);
+
   @override
   State<BookingScreen> createState() => _BookingScreenState();
 }
@@ -71,18 +72,20 @@ class _BookingScreenState extends State<BookingScreen> {
       initialTime: currentTime,
     );
 
-    MaterialLocalizations localizations = MaterialLocalizations.of(context);
-    String formattedTime = localizations.formatTimeOfDay(selectedTime!,
-        alwaysUse24HourFormat: false);
+    if (selectedTime != null) {
+      MaterialLocalizations localizations = MaterialLocalizations.of(context);
+      String formattedTime = localizations.formatTimeOfDay(selectedTime,
+          alwaysUse24HourFormat: false);
 
-    setState(() {
-      timeText = formattedTime;
-      _timeController.text = timeText;
-    });
-    dateTime = selectedTime.toString().substring(10, 15);
+      setState(() {
+        timeText = formattedTime;
+        _timeController.text = timeText;
+      });
+      dateTime = '${selectedTime.hour}:${selectedTime.minute}';
+    }
   }
 
-  showAlertDialog(BuildContext context) {
+  void showAlertDialog(BuildContext context) {
     Widget okButton = TextButton(
       child: Text(
         "OK",
@@ -126,7 +129,6 @@ class _BookingScreenState extends State<BookingScreen> {
   void initState() {
     super.initState();
     _getUser();
-    selectTime(context);
     _doctorController.text = widget.doctor;
   }
 
@@ -521,7 +523,7 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Future<void> _createAppointment() async {
-    String appointId = '${user.uid}${widget.doctorUid}$dateUTC $dateTime}';
+    String appointId = '${user.uid}${widget.doctorUid}$dateUTC $dateTime';
     debugPrint('${widget.doctorUid}.');
     debugPrint('${user.uid}.');
     debugPrint('${appointId}.');
@@ -531,7 +533,7 @@ class _BookingScreenState extends State<BookingScreen> {
       'phone': _phoneController.text,
       'description': _descriptionController.text,
       'doctorName': _doctorController.text,
-      'date': DateTime.parse('$dateUTC $dateTime:00'),
+      'date': Timestamp.fromDate(DateTime.parse('$dateUTC $dateTime:00')),  // Guardar la fecha como Timestamp
       'patientId': user.uid,
       'doctorId': widget.doctorUid,
       'appointmentID': appointId,
