@@ -14,7 +14,7 @@ class MainPageDoctor extends StatefulWidget {
 
 class _MainPageDoctorState extends State<MainPageDoctor> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  int _selectedIndex = 2;
+  int _selectedIndex = 0; // Inicializa el índice seleccionado a 0
   final List<Widget> _pages = [
     const Appointments(),
     const MyProfile(),
@@ -22,7 +22,9 @@ class _MainPageDoctorState extends State<MainPageDoctor> {
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      if (index < _pages.length) {
+        _selectedIndex = index;
+      }
     });
   }
 

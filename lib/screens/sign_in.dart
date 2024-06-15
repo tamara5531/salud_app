@@ -131,7 +131,6 @@ class _SignInState extends State<SignIn> {
                 fontSize: 18,
                 fontWeight: FontWeight.w800,
               ),
-              //keyboardType: TextInputType.visiblePassword,
               controller: _passwordController,
               decoration: InputDecoration(
                 contentPadding:
@@ -155,7 +154,7 @@ class _SignInState extends State<SignIn> {
               },
               textInputAction: TextInputAction.done,
               validator: (value) {
-                if (value!.isEmpty) return 'Please enter the Passord';
+                if (value!.isEmpty) return 'Please enter the Password';
                 return null;
               },
               obscureText: true,
@@ -171,7 +170,7 @@ class _SignInState extends State<SignIn> {
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
                       showLoaderDialog(context);
-                      _signInWithEmailAndPassword();
+                      await _signInWithEmailAndPassword();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -210,7 +209,7 @@ class _SignInState extends State<SignIn> {
               ),
             ),
 
-            // dont have account
+            // don't have account
             Padding(
               padding: const EdgeInsets.only(top: 18.0),
               child: Row(
@@ -254,7 +253,7 @@ class _SignInState extends State<SignIn> {
     super.dispose();
   }
 
-  showLoaderDialog(BuildContext context) {
+  void showLoaderDialog(BuildContext context) {
     AlertDialog alert = AlertDialog(
       content: Row(
         children: [
@@ -284,14 +283,32 @@ class _SignInState extends State<SignIn> {
     }
   }
 
-  void _signInWithEmailAndPassword() async {
+  Future<void> _signInWithEmailAndPassword() async {
     try {
       final User? user = (await _auth.signInWithEmailAndPassword(
         email: _emailController.text,
         password: _passwordController.text,
       ))
           .user;
-      if (!user!.emailVerified) {
+
+      if (user == null) {
+        Navigator.pop(context);
+        final snackBar = SnackBar(
+          content: Row(
+            children: const [
+              Icon(
+                Icons.info_outline,
+                color: Colors.white,
+              ),
+              Text(" User not found"),
+            ],
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+
+      if (!user.emailVerified) {
         await user.sendEmailVerification();
       }
 
@@ -299,19 +316,37 @@ class _SignInState extends State<SignIn> {
           .collection('users')
           .doc(user.uid)
           .get();
+
+      if (!snap.exists) {
+        Navigator.pop(context);
+        final snackBar = SnackBar(
+          content: Row(
+            children: const [
+              Icon(
+                Icons.info_outline,
+                color: Colors.white,
+              ),
+              Text(" User document not found"),
+            ],
+          ),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        return;
+      }
+
       var basicInfo = snap.data() as Map<String, dynamic>;
 
-      isDoctor = basicInfo['type'] == 'doctor' ? true : false;
+      isDoctor = basicInfo['type'] == 'doctor';
 
       // save data to local storage
-      SharedPreferenceHelper().saveUserId(user.uid);
-      // SharedPreferenceHelper().saveProfileUrl(user);
-      SharedPreferenceHelper().saveUserName(basicInfo['name']);
-      SharedPreferenceHelper().saveAccountType(basicInfo['type']== 'doctor'? true :false);
+      await SharedPreferenceHelper().saveUserId(user.uid);
+      await SharedPreferenceHelper().saveUserName(basicInfo['name']);
+      await SharedPreferenceHelper().saveAccountType(isDoctor);
 
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
     } catch (e) {
+      Navigator.pop(context);
       final snackBar = SnackBar(
         content: Row(
           children: const [
@@ -323,7 +358,6 @@ class _SignInState extends State<SignIn> {
           ],
         ),
       );
-      Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
