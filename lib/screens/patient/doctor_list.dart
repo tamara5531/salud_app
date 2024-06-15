@@ -1,6 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:medsal/firestore_data/search_list.dart';
 
 class DoctorsList extends StatefulWidget {
   const DoctorsList({Key? key}) : super(key: key);
@@ -17,8 +17,7 @@ class _DoctorsListState extends State<DoctorsList> {
   @override
   void initState() {
     super.initState();
-    search = _textController.text;
-    _length = search.length;
+    search = '';
   }
 
   @override
@@ -42,8 +41,7 @@ class _DoctorsListState extends State<DoctorsList> {
                 textCapitalization: TextCapitalization.words,
                 controller: _textController,
                 decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                  contentPadding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
@@ -60,40 +58,27 @@ class _DoctorsListState extends State<DoctorsList> {
                     Icons.search,
                     size: 20,
                   ),
-                  prefixStyle: TextStyle(
-                    color: Colors.grey[300],
-                  ),
                   suffixIcon: _textController.text.isNotEmpty
-                      ? TextButton(
-                          onPressed: () {
-                            setState(() {
-                              _textController.clear();
-                              _length = search.length;
-                            });
-                          },
-                          child: const Icon(
+                      ? IconButton(
+                          icon: const Icon(
                             Icons.close_rounded,
                             size: 20,
                           ),
+                          onPressed: () {
+                            setState(() {
+                              _textController.clear();
+                              search = '';
+                              _length = 0;
+                            });
+                          },
                         )
                       : const SizedBox(),
                 ),
-                // onFieldSubmitted: (String _searchKey) {
-                //   setState(
-                //     () {
-                //       print('>>>' + _searchKey);
-                //       search = _searchKey;
-                //     },
-                //   );
-                // },
                 onChanged: (String searchKey) {
-                  setState(
-                    () {
-                     debugPrint('>>>$searchKey');
-                      search = searchKey;
-                      _length = search.length;
-                    },
-                  );
+                  setState(() {
+                    search = searchKey;
+                    _length = searchKey.length;
+                  });
                 },
                 style: GoogleFonts.lato(
                   fontSize: 18,
@@ -131,10 +116,60 @@ class _DoctorsListState extends State<DoctorsList> {
                   ],
                 ),
               )
-            : SearchList(
+            : DoctorsListView(
                 searchKey: search,
               ),
       ),
+    );
+  }
+}
+
+class DoctorsListView extends StatelessWidget {
+  final String searchKey;
+
+  const DoctorsListView({Key? key, required this.searchKey}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: (searchKey.isEmpty)
+          ? FirebaseFirestore.instance.collection('doctor').snapshots() // Ajuste aquí
+          : FirebaseFirestore.instance
+              .collection('doctor') // Ajuste aquí
+              .where('name', isGreaterThanOrEqualTo: searchKey)
+              .where('name', isLessThanOrEqualTo: searchKey + '\uf8ff')
+              .snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
+          return const Center(child: Text('No doctors found'));
+        }
+
+        // Debug print to check the number of doctors found
+        debugPrint('Doctors found: ${snapshot.data!.docs.length}');
+
+        return ListView(
+          children: snapshot.data!.docs.map((doc) {
+            var data = doc.data() as Map<String, dynamic>;
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: (data['profilePhoto'] != null && data['profilePhoto'].isNotEmpty)
+                    ? NetworkImage(data['profilePhoto'])
+                    : const AssetImage('assets/person.jpg') as ImageProvider,
+              ),
+              title: Text(data['name'] ?? 'No Name'),
+              subtitle: Text(data['specialization'] ?? 'No Specialization'),
+              trailing: Text(data['rating']?.toString() ?? 'No Rating'),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 }
