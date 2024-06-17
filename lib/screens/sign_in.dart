@@ -27,28 +27,38 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       key: _scaffoldKey,
-      body: Builder(builder: (BuildContext context) {
-        return SafeArea(
-          child: NotificationListener<OverscrollIndicatorNotification>(
-            onNotification: (OverscrollIndicatorNotification overscroll) {
-              overscroll.disallowIndicator();
-              return true;
-            },
-            child: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
-                    child: withEmailPassword(),
-                  ),
-                ],
+      body: Stack(
+        children: [
+          Container(
+            constraints: const BoxConstraints.expand(),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/2.png'),
+                fit: BoxFit.cover,
               ),
             ),
           ),
-        );
-      }),
+          SafeArea(
+            child: NotificationListener<OverscrollIndicatorNotification>(
+              onNotification: (OverscrollIndicatorNotification overscroll) {
+                overscroll.disallowIndicator();
+                return true;
+              },
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+                      child: withEmailPassword(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -60,16 +70,7 @@ class _SignInState extends State<SignIn> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(
-              width: double.infinity,
-              child: Image.asset(
-                'assets/vector-doc2.jpg',
-                scale: 3.5,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
+            const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.only(bottom: 25),
               child: Text(
@@ -80,7 +81,6 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
             ),
-            // email
             TextFormField(
               focusNode: f1,
               style: GoogleFonts.lato(
@@ -112,19 +112,15 @@ class _SignInState extends State<SignIn> {
               textInputAction: TextInputAction.next,
               validator: (value) {
                 if (value!.isEmpty) {
-                  return 'Please enter the Email';
+                  return 'Por favor, ingrese Email';
                 } else if (!emailValidate(value)) {
-                  return 'Please enter correct Email';
+                  return 'Por favor, ingrese email válido';
                 } else {
                   return null;
                 }
               },
             ),
-            const SizedBox(
-              height: 25.0,
-            ),
-
-            // password
+            const SizedBox(height: 25.0),
             TextFormField(
               focusNode: f2,
               style: GoogleFonts.lato(
@@ -141,7 +137,7 @@ class _SignInState extends State<SignIn> {
                 ),
                 filled: true,
                 fillColor: Colors.grey[350],
-                hintText: 'Password',
+                hintText: 'Contraseña',
                 hintStyle: GoogleFonts.lato(
                   color: Colors.black26,
                   fontSize: 18,
@@ -154,12 +150,15 @@ class _SignInState extends State<SignIn> {
               },
               textInputAction: TextInputAction.done,
               validator: (value) {
+<<<<<<< Updated upstream
                 if (value!.isEmpty) return 'Please enter the Password';
+=======
+                if (value!.isEmpty) return 'Por favor, ingrese contraseña';
+>>>>>>> Stashed changes
                 return null;
               },
               obscureText: true,
             ),
-            // sign in button
             Container(
               padding: const EdgeInsets.only(top: 25.0),
               child: SizedBox(
@@ -174,13 +173,15 @@ class _SignInState extends State<SignIn> {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.indigo[900], elevation: 2,
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.indigo[900],
+                    elevation: 2,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32.0),
                     ),
                   ),
                   child: Text(
-                    "Sign In",
+                    "Iniciar sesión",
                     style: GoogleFonts.lato(
                       color: Colors.white,
                       fontSize: 18.0,
@@ -190,7 +191,6 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
             ),
-            // forget password
             Container(
               padding: const EdgeInsets.only(top: 15),
               child: TextButton(
@@ -199,7 +199,7 @@ class _SignInState extends State<SignIn> {
                         MaterialStateProperty.all(Colors.transparent)),
                 onPressed: () {},
                 child: Text(
-                  'Forgot Password?',
+                  '¿Olvidaste tu contraseña?',
                   style: GoogleFonts.lato(
                     fontSize: 16,
                     color: Colors.black54,
@@ -208,8 +208,11 @@ class _SignInState extends State<SignIn> {
                 ),
               ),
             ),
+<<<<<<< Updated upstream
 
             // don't have account
+=======
+>>>>>>> Stashed changes
             Padding(
               padding: const EdgeInsets.only(top: 18.0),
               child: Row(
@@ -217,7 +220,7 @@ class _SignInState extends State<SignIn> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "Don't have an account?",
+                    "¿No tienes cuenta? ",
                     style: GoogleFonts.lato(
                       fontSize: 15.0,
                       fontWeight: FontWeight.w700,
@@ -229,7 +232,7 @@ class _SignInState extends State<SignIn> {
                             MaterialStateProperty.all(Colors.transparent)),
                     onPressed: () => _pushPage(context, const Register()),
                     child: Text(
-                      'Signup here',
+                      'Regístrate aquí',
                       style: GoogleFonts.lato(
                         fontSize: 15,
                         color: Colors.indigo[700],
@@ -260,7 +263,7 @@ class _SignInState extends State<SignIn> {
           const CircularProgressIndicator(),
           Container(
               margin: const EdgeInsets.only(left: 15),
-              child: const Text("Loading...")),
+              child: const Text("Cargando...")),
         ],
       ),
     );
@@ -338,10 +341,17 @@ class _SignInState extends State<SignIn> {
 
       isDoctor = basicInfo['type'] == 'doctor';
 
+<<<<<<< Updated upstream
       // save data to local storage
       await SharedPreferenceHelper().saveUserId(user.uid);
       await SharedPreferenceHelper().saveUserName(basicInfo['name']);
       await SharedPreferenceHelper().saveAccountType(isDoctor);
+=======
+      SharedPreferenceHelper().saveUserId(user.uid);
+      SharedPreferenceHelper().saveUserName(basicInfo['name']);
+      SharedPreferenceHelper()
+          .saveAccountType(basicInfo['type'] == 'doctor' ? true : false);
+>>>>>>> Stashed changes
 
       Navigator.of(context)
           .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
@@ -354,7 +364,7 @@ class _SignInState extends State<SignIn> {
               Icons.info_outline,
               color: Colors.white,
             ),
-            Text(" There was a problem signing you in"),
+            Text(" Hubo un problema al iniciar sesión"),
           ],
         ),
       );
