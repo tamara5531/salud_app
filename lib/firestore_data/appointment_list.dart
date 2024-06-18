@@ -1,27 +1,54 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+// Importa la biblioteca de Cloud Firestore para interactuar con la base de datos Firestore.
+
 import 'package:firebase_auth/firebase_auth.dart';
+// Importa la biblioteca de autenticación de Firebase para manejar la autenticación de usuarios.
+
 import 'package:flutter/material.dart';
+// Importa la biblioteca de Flutter para desarrollar interfaces gráficas con componentes de Material Design.
+
 import 'package:google_fonts/google_fonts.dart';
+// Importa la biblioteca Google Fonts para utilizar fuentes de Google en la aplicación.
+
 import 'package:medsal/globals.dart';
+// Importa un archivo local llamado globals.dart, que probablemente contiene variables globales para la aplicación.
+
 import 'package:intl/intl.dart';
+// Importa la biblioteca intl para la manipulación y formateo de fechas y horas.
 
 class AppointmentList extends StatefulWidget {
+  // Declara una clase `AppointmentList` que extiende `StatefulWidget`.
+  // Esta clase representa la pantalla de la lista de citas.
+
   const AppointmentList({Key? key}) : super(key: key);
+  // Define un constructor constante para `AppointmentList` que acepta una clave opcional.
 
   @override
   State<AppointmentList> createState() => _AppointmentListState();
+  // Sobrescribe el método `createState` para devolver una instancia de `_AppointmentListState`,
+  // que manejará el estado de este widget.
 }
 
 class _AppointmentListState extends State<AppointmentList> {
+  // Define la clase `_AppointmentListState` que extiende `State<AppointmentList>`
+  // para gestionar el estado del widget `AppointmentList`.
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // Crea una instancia de `FirebaseAuth` para manejar la autenticación de usuarios.
+
   late User user;
+  // Declara una variable `user` de tipo `User` que se inicializará más tarde.
+
   late String _documentID;
+  // Declara una variable `_documentID` de tipo `String` que se inicializará más tarde.
 
   Future<void> _getUser() async {
+    // Método para obtener el usuario autenticado actual.
     user = _auth.currentUser!;
+    // Asigna el usuario autenticado actual a la variable `user`.
   }
 
-  // delete appointment from both patient and doctor
+  // Método para eliminar una cita tanto del paciente como del doctor.
   Future<void> deleteAppointment(
       String docID, String doctorId, String patientId) async {
     FirebaseFirestore.instance
@@ -30,56 +57,70 @@ class _AppointmentListState extends State<AppointmentList> {
         .collection('pending')
         .doc(docID)
         .delete();
+    // Elimina la cita de la colección de citas pendientes del doctor.
+
     return FirebaseFirestore.instance
         .collection('appointments')
         .doc(patientId)
         .collection('pending')
         .doc(docID)
         .delete();
+    // Elimina la cita de la colección de citas pendientes del paciente.
   }
 
+  // Método para formatear la fecha a un formato más legible.
   String _dateFormatter(String timestamp) {
     String formattedDate =
         DateFormat('dd-MM-yyyy').format(DateTime.parse(timestamp));
+    // Formatea la fecha en el formato 'dd-MM-yyyy'.
+
     return formattedDate;
+    // Devuelve la fecha formateada.
   }
 
+  // Método para formatear la hora a un formato más legible.
   String _timeFormatter(String timestamp) {
     String formattedTime =
         DateFormat('kk:mm').format(DateTime.parse(timestamp));
+    // Formatea la hora en el formato 'kk:mm'.
+
     return formattedTime;
+    // Devuelve la hora formateada.
   }
 
-  // alert box for confirmation of deleting appointment
+  // Método para mostrar un cuadro de diálogo de confirmación para eliminar una cita.
   showAlertDialog(BuildContext context, String doctorId, String patientId) {
-    // No
+    // Botón de cancelación.
     Widget cancelButton = TextButton(
       child: const Text("No"),
       onPressed: () {
         Navigator.of(context).pop();
+        // Cierra el cuadro de diálogo.
       },
     );
 
-    // YES
+    // Botón de confirmación.
     Widget continueButton = TextButton(
-      child: const Text("Yes"),
+      child: const Text("Si"),
       onPressed: () {
         deleteAppointment(_documentID, doctorId, patientId);
+        // Llama al método `deleteAppointment` para eliminar la cita.
         Navigator.of(context).pop();
+        // Cierra el cuadro de diálogo.
       },
     );
 
-    // set up the AlertDialog
+    // Configura el AlertDialog.
     AlertDialog alert = AlertDialog(
-      title: const Text("Confirm Delete"),
-      content: const Text("Are you sure you want to delete this Appointment?"),
+      title: const Text("Confirmar eliminación"),
+      content: const Text("¿Está seguro de que desea eliminar esta cita?"),
       actions: [
         cancelButton,
         continueButton,
       ],
     );
 
-    // show the dialog
+    // Muestra el cuadro de diálogo.
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -88,26 +129,36 @@ class _AppointmentListState extends State<AppointmentList> {
     );
   }
 
-  // helping in removing pending appointment
+  // Método para ayudar a eliminar las citas pendientes.
   _checkDiff(DateTime date) {
-   debugPrint(date as String?);
+    debugPrint(date as String?);
+    // Imprime la fecha en la consola para fines de depuración.
+
     var diff = DateTime.now().difference(date).inSeconds;
-    debugPrint('date difference : $diff');
+    // Calcula la diferencia en segundos entre la fecha actual y la fecha dada.
+
+    debugPrint('diferencia de fecha : $diff');
+    // Imprime la diferencia de fecha en la consola para fines de depuración.
+
     if (diff > 0) {
       return true;
+      // Devuelve `true` si la diferencia es mayor que 0 (la fecha está en el pasado).
     } else {
       return false;
+      // Devuelve `false` si la diferencia es 0 o menor (la fecha está en el futuro).
     }
   }
 
-  // for comparing date
+  // Método para comparar fechas.
   _compareDate(String date) {
     if (_dateFormatter(DateTime.now().toString())
             .compareTo(_dateFormatter(date)) ==
         0) {
       return true;
+      // Devuelve `true` si la fecha actual es igual a la fecha dada.
     } else {
       return false;
+      // Devuelve `false` si la fecha actual no es igual a la fecha dada.
     }
   }
 
@@ -115,34 +166,45 @@ class _AppointmentListState extends State<AppointmentList> {
   void initState() {
     super.initState();
     _getUser();
+    // Llama al método `_getUser` cuando se inicializa el estado.
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
+      // Crea un widget `SafeArea` para evitar que el contenido se superponga con las áreas del sistema operativo.
+
       child: StreamBuilder(
+        // Crea un `StreamBuilder` para escuchar cambios en los datos de Firestore.
+
         stream: FirebaseFirestore.instance
             .collection('appointments')
             .doc(user.uid)
             .collection('pending')
             .orderBy('date')
             .snapshots(),
+        // Escucha los cambios en la colección de citas pendientes del usuario autenticado,
+        // ordenadas por fecha.
+
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData) {
             return const Center(
               child: CircularProgressIndicator(),
+              // Muestra un indicador de progreso mientras se cargan los datos.
             );
           }
           return snapshot.data!.size == 0
               ? Center(
                   child: Text(
-                    'No Appointment Scheduled',
+                    'No hay cita programada',
                     style: GoogleFonts.lato(
                       color: Colors.grey,
                       fontSize: 18,
                     ),
                   ),
                 )
+              // Muestra un mensaje si no hay citas programadas.
+
               : ListView.builder(
                   scrollDirection: Axis.vertical,
                   physics: const ClampingScrollPhysics(),
@@ -150,14 +212,15 @@ class _AppointmentListState extends State<AppointmentList> {
                   itemCount: snapshot.data!.size,
                   itemBuilder: (context, index) {
                     DocumentSnapshot document = snapshot.data!.docs[index];
+                    // Obtiene el documento en el índice actual.
 
-                    // delete past appointments from pending appointment list
+                    // Elimina las citas pasadas de la lista de citas pendientes.
                     if (_checkDiff(document['date'].toDate())) {
                       deleteAppointment(document.id, document['doctorId'],
                           document['patientId']);
                     }
 
-                    // each appointment
+                    // Cada cita.
                     return Card(
                       elevation: 2,
                       child: InkWell(
@@ -165,11 +228,11 @@ class _AppointmentListState extends State<AppointmentList> {
                         child: ExpansionTile(
                           initiallyExpanded: true,
 
-                          // main info of appointment
+                          // Información principal de la cita.
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              // doctor name
+                              // Nombre del doctor o paciente.
                               Padding(
                                 padding: const EdgeInsets.only(left: 5),
                                 child: Text(
@@ -183,11 +246,11 @@ class _AppointmentListState extends State<AppointmentList> {
                                 ),
                               ),
 
-                              // Today label
+                              // Etiqueta "HOY".
                               Text(
                                 _compareDate(
                                         document['date'].toDate().toString())
-                                    ? "TODAY"
+                                    ? "HOY"
                                     : "",
                                 style: GoogleFonts.lato(
                                     color: Colors.green,
@@ -201,7 +264,7 @@ class _AppointmentListState extends State<AppointmentList> {
                             ],
                           ),
 
-                          // appointment date
+                          // Fecha de la cita.
                           subtitle: Padding(
                             padding: const EdgeInsets.only(left: 5),
                             child: Text(
@@ -211,7 +274,7 @@ class _AppointmentListState extends State<AppointmentList> {
                             ),
                           ),
 
-                          // patient info
+                          // Información del paciente.
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(
@@ -220,16 +283,16 @@ class _AppointmentListState extends State<AppointmentList> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // patient info
+                                  // Información del paciente.
                                   Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      // patient name
+                                      // Nombre del paciente.
                                       Text(
                                         isDoctor
                                             ? ''
-                                            : "Patient name: ${document['patientName']}",
+                                            : "Nombre paciente: ${document['patientName']}",
                                         style: GoogleFonts.lato(
                                           fontSize: 16,
                                         ),
@@ -238,9 +301,9 @@ class _AppointmentListState extends State<AppointmentList> {
                                         height: 10,
                                       ),
 
-                                      // Appointment time
+                                      // Hora de la cita.
                                       Text(
-                                        'Time: ${_timeFormatter(document['date'].toDate().toString())}',
+                                        'Horario: ${_timeFormatter(document['date'].toDate().toString())}',
                                         style: GoogleFonts.lato(fontSize: 16),
                                       ),
 
@@ -248,16 +311,17 @@ class _AppointmentListState extends State<AppointmentList> {
                                         height: 10,
                                       ),
 
+                                      // Descripción de la cita.
                                       Text(
-                                        'Description : ${document['description']}',
+                                        'Descripcion : ${document['description']}',
                                         style: GoogleFonts.lato(fontSize: 16),
                                       )
                                     ],
                                   ),
 
-                                  // delete button
+                                  // Botón para eliminar la cita.
                                   IconButton(
-                                    tooltip: 'Delete Appointment',
+                                    tooltip: 'Eliminar cita',
                                     icon: const Icon(
                                       Icons.delete,
                                       color: Colors.red,

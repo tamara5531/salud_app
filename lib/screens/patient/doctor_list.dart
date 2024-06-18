@@ -31,7 +31,7 @@ class _DoctorsListState extends State<DoctorsList> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('Find Doctors'),
+        title: const Text('Encontrar profesionales'),
         actions: <Widget>[
           SafeArea(
             child: Container(
@@ -41,14 +41,15 @@ class _DoctorsListState extends State<DoctorsList> {
                 textCapitalization: TextCapitalization.words,
                 controller: _textController,
                 decoration: InputDecoration(
-                  contentPadding: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
+                  contentPadding:
+                      const EdgeInsets.only(left: 20, top: 10, bottom: 10),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                     borderSide: BorderSide.none,
                   ),
                   filled: true,
                   fillColor: Colors.grey[300],
-                  hintText: 'Search Doctor',
+                  hintText: 'Buscar Profesional',
                   hintStyle: GoogleFonts.lato(
                     color: Colors.black26,
                     fontSize: 18,
@@ -105,7 +106,7 @@ class _DoctorsListState extends State<DoctorsList> {
                         });
                       },
                       child: Text(
-                        'Show All',
+                        'Mostrar todo',
                         style: GoogleFonts.lato(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -133,7 +134,9 @@ class DoctorsListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: (searchKey.isEmpty)
-          ? FirebaseFirestore.instance.collection('doctor').snapshots() // Ajuste aquí
+          ? FirebaseFirestore.instance
+              .collection('doctor')
+              .snapshots() // Ajuste aquí
           : FirebaseFirestore.instance
               .collection('doctor') // Ajuste aquí
               .where('name', isGreaterThanOrEqualTo: searchKey)
@@ -148,18 +151,19 @@ class DoctorsListView extends StatelessWidget {
         }
 
         if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-          return const Center(child: Text('No doctors found'));
+          return const Center(child: Text('No se encontraron profesionales'));
         }
 
         // Debug print to check the number of doctors found
-        debugPrint('Doctors found: ${snapshot.data!.docs.length}');
+        debugPrint('Profesionales: ${snapshot.data!.docs.length}');
 
         return ListView(
           children: snapshot.data!.docs.map((doc) {
             var data = doc.data() as Map<String, dynamic>;
             return ListTile(
               leading: CircleAvatar(
-                backgroundImage: (data['profilePhoto'] != null && data['profilePhoto'].isNotEmpty)
+                backgroundImage: (data['profilePhoto'] != null &&
+                        data['profilePhoto'].isNotEmpty)
                     ? NetworkImage(data['profilePhoto'])
                     : const AssetImage('assets/person.jpg') as ImageProvider,
               ),

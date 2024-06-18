@@ -1,9 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+// Importa la biblioteca de Cloud Firestore para interactuar con la base de datos Firestore.
+
 import 'package:firebase_auth/firebase_auth.dart';
+// Importa la biblioteca de Firebase Auth para manejar la autenticación de usuarios.
+
 import 'package:flutter/material.dart';
+// Importa la biblioteca de Flutter para desarrollar interfaces gráficas con componentes de Material Design.
+
 import 'package:google_fonts/google_fonts.dart';
+// Importa la biblioteca Google Fonts para utilizar fuentes de Google en la aplicación.
+
 import 'package:medsal/screens/patient/appointments.dart';
+// Importa el archivo `appointments.dart` del proyecto `medsal`, que probablemente contiene la pantalla de citas.
+
 import 'package:intl/intl.dart';
+// Importa la biblioteca intl para la internacionalización y formateo de fechas.
 
 class BookingScreen extends StatefulWidget {
   final String doctor;
@@ -17,6 +28,7 @@ class BookingScreen extends StatefulWidget {
 }
 
 class _BookingScreenState extends State<BookingScreen> {
+  // Define un GlobalKey para el formulario y los controladores de texto para manejar la entrada del usuario.
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -25,26 +37,31 @@ class _BookingScreenState extends State<BookingScreen> {
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
 
+  // Define FocusNodes para controlar el enfoque de los campos del formulario.
   FocusNode f1 = FocusNode();
   FocusNode f2 = FocusNode();
   FocusNode f3 = FocusNode();
   FocusNode f4 = FocusNode();
   FocusNode f5 = FocusNode();
 
+  // Define un GlobalKey para el Scaffold y variables para manejar la fecha y hora seleccionadas.
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DateTime selectedDate = DateTime.now();
   TimeOfDay currentTime = TimeOfDay.now();
-  String timeText = 'Select Time';
+  String timeText = 'Seleccionar hora';
   late String dateUTC;
   late String dateTime;
 
+  // Define una instancia de FirebaseAuth y una variable para el usuario actual.
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late User user;
 
+  // Función para obtener el usuario actual.
   Future<void> _getUser() async {
     user = _auth.currentUser!;
   }
 
+  // Función para seleccionar una fecha.
   Future<void> selectDate(BuildContext context) async {
     showDatePicker(
       context: context,
@@ -66,6 +83,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
+  // Función para seleccionar una hora.
   Future<void> selectTime(BuildContext context) async {
     TimeOfDay? selectedTime = await showTimePicker(
       context: context,
@@ -85,6 +103,7 @@ class _BookingScreenState extends State<BookingScreen> {
     }
   }
 
+  // Función para mostrar un cuadro de diálogo de alerta.
   void showAlertDialog(BuildContext context) {
     Widget okButton = TextButton(
       child: Text(
@@ -103,13 +122,13 @@ class _BookingScreenState extends State<BookingScreen> {
 
     AlertDialog alert = AlertDialog(
       title: Text(
-        "Done!",
+        "¡Hecho!",
         style: GoogleFonts.lato(
           fontWeight: FontWeight.bold,
         ),
       ),
       content: Text(
-        "Appointment is registered.",
+        "La cita está registrada.",
         style: GoogleFonts.lato(),
       ),
       actions: [
@@ -125,6 +144,7 @@ class _BookingScreenState extends State<BookingScreen> {
     );
   }
 
+  // Inicializa el estado del widget.
   @override
   void initState() {
     super.initState();
@@ -132,6 +152,7 @@ class _BookingScreenState extends State<BookingScreen> {
     _doctorController.text = widget.doctor;
   }
 
+  // Construye la interfaz de usuario.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -141,7 +162,7 @@ class _BookingScreenState extends State<BookingScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          'Appointment booking',
+          'Reserva de cita',
           style: GoogleFonts.lato(
             color: Colors.black,
             fontSize: 20,
@@ -179,7 +200,7 @@ class _BookingScreenState extends State<BookingScreen> {
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.only(left: 16),
                         child: Text(
-                          'Enter Patient Details',
+                          'Ingrese los detalles del paciente',
                           style: GoogleFonts.lato(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -195,7 +216,7 @@ class _BookingScreenState extends State<BookingScreen> {
                         focusNode: f1,
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please Enter Patient Name';
+                            return 'Por favor ingrese el nombre del paciente';
                           }
                           return null;
                         },
@@ -211,7 +232,7 @@ class _BookingScreenState extends State<BookingScreen> {
                           ),
                           filled: true,
                           fillColor: Colors.grey[350],
-                          hintText: 'Patient Name*',
+                          hintText: 'Nombre del paciente*',
                           hintStyle: GoogleFonts.lato(
                             color: Colors.black26,
                             fontSize: 18,
@@ -252,9 +273,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please Enter Phone number';
+                            return 'Por favor ingrese el número de teléfono';
                           } else if (value.length < 10) {
-                            return 'Please Enter correct Phone number';
+                            return 'Por favor ingrese el número de teléfono correcto';
                           }
                           return null;
                         },
@@ -304,7 +325,8 @@ class _BookingScreenState extends State<BookingScreen> {
                         readOnly: true,
                         controller: _doctorController,
                         validator: (value) {
-                          if (value!.isEmpty) return 'Please enter Doctor name';
+                          if (value!.isEmpty)
+                            return 'Por favor ingrese el nombre del médico';
                           return null;
                         },
                         style: GoogleFonts.lato(
@@ -365,7 +387,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               controller: _dateController,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please Enter the Date';
+                                  return 'Por favor ingrese la fecha';
                                 }
                                 return null;
                               },
@@ -440,7 +462,7 @@ class _BookingScreenState extends State<BookingScreen> {
                               controller: _timeController,
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return 'Please Enter the Time';
+                                  return 'Por favor ingrese la hora';
                                 }
                                 return null;
                               },
@@ -484,7 +506,9 @@ class _BookingScreenState extends State<BookingScreen> {
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                            foregroundColor: Colors.black, backgroundColor: Colors.indigo, elevation: 2,
+                            foregroundColor: Colors.black,
+                            backgroundColor: Colors.indigo,
+                            elevation: 2,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(32.0),
                             ),
@@ -499,7 +523,7 @@ class _BookingScreenState extends State<BookingScreen> {
                             }
                           },
                           child: Text(
-                            "Book Appointment",
+                            "Reservar una cita",
                             style: GoogleFonts.lato(
                               color: Colors.white,
                               fontSize: 18,
@@ -523,20 +547,45 @@ class _BookingScreenState extends State<BookingScreen> {
   }
 
   Future<void> _createAppointment() async {
+    // Crea una cita en Firestore.
+
     String appointId = '${user.uid}${widget.doctorUid}$dateUTC $dateTime';
+    // Genera un ID único para la cita combinando el UID del usuario, el UID del doctor, la fecha y la hora.
+
     debugPrint('${widget.doctorUid}.');
+    // Imprime en la consola el UID del doctor.
+
     debugPrint('${user.uid}.');
+    // Imprime en la consola el UID del usuario.
+
     debugPrint('${appointId}.');
+    // Imprime en la consola el ID de la cita.
 
     var details = {
-      'patientName': _nameController.text,
-      'phone': _phoneController.text,
-      'description': _descriptionController.text,
-      'doctorName': _doctorController.text,
-      'date': Timestamp.fromDate(DateTime.parse('$dateUTC $dateTime:00')),  // Guardar la fecha como Timestamp
-      'patientId': user.uid,
-      'doctorId': widget.doctorUid,
-      'appointmentID': appointId,
+      // Crea un mapa con los detalles de la cita.
+      'nombrePaciente': _nameController.text,
+      // Nombre del paciente.
+
+      'Telefono': _phoneController.text,
+      // Teléfono del paciente.
+
+      'descripcion': _descriptionController.text,
+      // Descripción de la cita.
+
+      'nombreProfesional': _doctorController.text,
+      // Nombre del doctor.
+
+      'fecha': Timestamp.fromDate(DateTime.parse('$dateUTC $dateTime:00')),
+      // Fecha y hora de la cita convertida a Timestamp.
+
+      'pacientetId': user.uid,
+      // UID del paciente.
+
+      'profecionalId': widget.doctorUid,
+      // UID del doctor.
+
+      'citaID': appointId,
+      // ID único de la cita.
     };
 
     FirebaseFirestore.instance
@@ -545,6 +594,7 @@ class _BookingScreenState extends State<BookingScreen> {
         .collection('pending')
         .doc(appointId)
         .set(details, SetOptions(merge: true));
+    // Guarda los detalles de la cita en la subcolección "pending" (pendientes) del paciente en Firestore.
 
     FirebaseFirestore.instance
         .collection('appointments')
@@ -552,6 +602,7 @@ class _BookingScreenState extends State<BookingScreen> {
         .collection('all')
         .doc(appointId)
         .set(details, SetOptions(merge: true));
+    // Guarda los detalles de la cita en la subcolección "all" (todas) del paciente en Firestore.
 
     FirebaseFirestore.instance
         .collection('appointments')
@@ -559,6 +610,7 @@ class _BookingScreenState extends State<BookingScreen> {
         .collection('pending')
         .doc(appointId)
         .set(details, SetOptions(merge: true));
+    // Guarda los detalles de la cita en la subcolección "pending" (pendientes) del doctor en Firestore.
 
     FirebaseFirestore.instance
         .collection('appointments')
@@ -566,5 +618,6 @@ class _BookingScreenState extends State<BookingScreen> {
         .collection('all')
         .doc(appointId)
         .set(details, SetOptions(merge: true));
+    // Guarda los detalles de la cita en la subcolección "all" (todas) del doctor en Firestore.
   }
 }
