@@ -1,49 +1,110 @@
+# Este archivo es el archivo de configuración `pubspec.yaml` de un proyecto Flutter llamado "medsal".
+# Este archivo define las dependencias y configuraciones necesarias para el proyecto.
+
+# Nombre del proyecto
 name: medsal
+
+# Descripción del proyecto
 description: A new Flutter project.
 
+# Configuración para no publicar el paquete en pub.dev
 publish_to: "none"
 
+# Versión del proyecto, siguiendo el formato versión+compilación
 version: 1.0.0+1
 
+# Especificación del entorno, define las versiones compatibles del SDK de Dart
 environment:
   sdk: ">=2.17.0 <3.0.0"
 
+# Dependencias necesarias para el proyecto
 dependencies:
+  # Biblioteca para crear sliders/carousel
   carousel_slider: ^4.1.1
+
+  # Biblioteca para usar Cloud Firestore, una base de datos NoSQL en la nube
   cloud_firestore: ^4.5.1
+
+  # Conjunto de iconos de Cupertino (estilo iOS)
   cupertino_icons: ^1.0.2
+
+  # Biblioteca para la autenticación con Firebase
   firebase_auth: ^4.4.0
+
+  # Biblioteca para inicializar Firebase
   firebase_core: ^2.10.0
+
+  # Biblioteca para usar la base de datos en tiempo real de Firebase
   firebase_database: ^10.0.6
+
+  # Biblioteca para usar el almacenamiento de Firebase
   firebase_storage: ^11.0.8
+
+  # Biblioteca principal de Flutter
   flutter:
     sdk: flutter
+
+  # Biblioteca para usar iconos personalizados
   fluttericon: ^2.0.0
+
+  # Biblioteca para usar fuentes de Google
   google_fonts: ^6.2.1
+
+  # Biblioteca para crear una barra de navegación estilo Google
   google_nav_bar: ^5.0.6
+
+  # Biblioteca para usar iconos personalizados
   icon: ^2.2.1
+
+  # Biblioteca para seleccionar imágenes desde la galería o la cámara
   image_picker: ^0.8.5+3
+
+  # Biblioteca para internacionalización y formateo de fechas
   intl: ^0.17.0
+
+  # Biblioteca para crear pantallas de introducción/tutorial
   introduction_screen: ^3.0.2
+
+  # Biblioteca para almacenar datos en el dispositivo del usuario
   shared_preferences: ^2.0.15
+
+  # Biblioteca para usar iconos de Tabler
   tabler_icons: ^0.0.3
+
+  # Biblioteca para usar iconos de Typicons
   typicons_flutter: ^0.5.0
+
+  # Biblioteca para lanzar URLs
   url_launcher: ^6.1.0
+
+  # Biblioteca para realizar solicitudes HTTP
   http: ^1.2.1
+
+  # Biblioteca para operaciones criptográficas
   crypto: ^3.0.1
 
+# Dependencias de desarrollo necesarias para el proyecto
 dev_dependencies:
+  # Biblioteca para generar iconos de lanzamiento
   flutter_launcher_icons: ^0.9.2
+
+  # Conjunto de reglas de linting para Flutter
   flutter_lints: ^2.0.0
+
+  # Biblioteca para realizar pruebas en Flutter
   flutter_test:
     sdk: flutter
 
+# Configuración para los iconos de la aplicación
 flutter_icons:
   android: "launcher_icon"
   image_path: "assets/icon/appicon.png"
 
+# Configuración general de Flutter
 flutter:
+  # Habilitar el uso de diseño de materiales (Material Design)
   uses-material-design: true
 
+  # Incluir activos (recursos) en el proyecto
   assets:
     - assets/

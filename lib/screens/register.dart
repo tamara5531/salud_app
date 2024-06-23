@@ -587,8 +587,9 @@ class _RegisterState extends State<Register> {
       String name = (type == 0)
           ? 'Profesional. ${_displayName.text}'
           : _displayName.text; // Establece el nombre según el tipo de cuenta.
-      String accountType =
-          (type == 0) ? 'doctor' : 'patient'; // Establece el tipo de cuenta.
+      String accountType = (type == 0)
+          ? 'profesional'
+          : 'paciente'; // Establece el tipo de cuenta.
       FirebaseFirestore.instance.collection('users').doc(user.uid).set({
         'name': name,
         'type': accountType,
@@ -604,7 +605,7 @@ class _RegisterState extends State<Register> {
         'email': user.email,
         'phone': null,
         'bio': null,
-        'address': null,
+        'address': 'Comunas en las que atiendes',
         'profilePhoto': null,
       };
       // Si es doctor
@@ -615,7 +616,7 @@ class _RegisterState extends State<Register> {
           'rating': double.parse(
               (3 + Random().nextDouble() * 1.9).toStringAsPrecision(2)),
           'specification': null,
-          'specialization': 'general',
+          'specialization': 'Profesion',
         });
         globals.isDoctor = true;
       }

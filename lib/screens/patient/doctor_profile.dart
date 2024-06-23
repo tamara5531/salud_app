@@ -189,7 +189,7 @@ class _DoctorProfileState extends State<DoctorProfile> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width / 1.4,
                                 child: Text(
-                                  document['address'] ?? '-',
+                                  document['address'] ?? 'comunas que atiende',
                                   style: GoogleFonts.lato(
                                     fontSize: 16,
                                     // Aplica el estilo del texto usando la fuente Lato.

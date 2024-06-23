@@ -1,6 +1,3 @@
-
-
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -43,7 +40,7 @@ class Carouselslider extends StatelessWidget {
                       }))
                     : Navigator.push(context,
                         MaterialPageRoute(builder: (BuildContext context) {
-                        return const DiseaseDetail(disease: 'Covid-19');
+                        return const DiseaseDetail(disease: 'Influenza 2024');
                       }));
               },
               child: Stack(
